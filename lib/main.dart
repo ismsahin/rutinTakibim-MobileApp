@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:yapilacaklar_listem_proje/DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
 import 'package:yapilacaklar_listem_proje/bildirim_ekrani.dart';
 import 'package:yapilacaklar_listem_proje/AnaEkran.dart';
 import 'package:yapilacaklar_listem_proje/HarcamalarEkrani.dart';
@@ -10,8 +10,7 @@ import 'package:yapilacaklar_listem_proje/HesabimEkrani.dart';
 void main() {
   runApp(TodoApp());
 }
-//https://www.youtube.com/watch?v=V1ofEl17_BQ
-//https://github.com/asjqkkkk/flutter-todos
+
 class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -33,6 +32,7 @@ class AnaSayfa extends StatefulWidget {
 
 class _AnaSayfaState extends State<AnaSayfa> {
   int _selectedIndex = 0;
+  List<Map<String, dynamic>> todos = [];
 
   final List<Widget> _pages = [
     AnaEkran(),
@@ -41,6 +41,19 @@ class _AnaSayfaState extends State<AnaSayfa> {
     TakvimEkrani(),
     HesabimEkrani(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshTodos();
+  }
+
+  Future<void> _refreshTodos() async {
+    final data = await DatabaseHelper.instance.readAllTodos();
+    setState(() {
+      todos = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +115,3 @@ const _navBarItems = [
     label: 'Hesabım',
   ),
 ];
-
-
-
-

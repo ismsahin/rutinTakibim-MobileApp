@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:yapilacaklar_listem_proje/DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
 
-class AnaEkran extends StatelessWidget {
+class AnaEkran extends StatefulWidget {
+  @override
+  _AnaEkranState createState() => _AnaEkranState();
+}
+
+class _AnaEkranState extends State<AnaEkran> {
+  List<Map<String, dynamic>> todos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshTodos();
+  }
+
+  Future<void> _refreshTodos() async {
+    final data = await DatabaseHelper.instance.readAllTodos();
+    setState(() {
+      todos = data;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -33,11 +54,7 @@ class AnaEkran extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Text('1. Alışverişe git'),
-                  Text('2. Spor yap'),
-                  Text('3. Ders çalış'),
-                  Text('4. Kitap oku'),
-                  Text('5. Arkadaşlarla buluş'),
+                  ...todos.map((todo) => Text(todo['task'])).toList(),
                 ],
               ),
             ),
