@@ -72,6 +72,28 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
               ],
             ),
           ),
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Toplam yapılacaklar:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), // fontSize'u 18 olarak güncellendi
+                ),
+                SizedBox(width: 5),
+                Text(
+                  '${todos.length}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), // fontSize'u 18 olarak güncellendi
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

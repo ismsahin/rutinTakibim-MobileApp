@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'databaseharcamalar.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,20 @@ class HarcamalarEkrani extends StatefulWidget {
 class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
   List<Harcama> harcamalar = [];
   double toplamHarcama = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHarcamalar();
+  }
+
+  Future<void> _loadHarcamalar() async {
+    final dbHarcamalar = await DatabaseHarcamalar.instance.readAllHarcamalar();
+    setState(() {
+      harcamalar = dbHarcamalar;
+      toplamHarcama = harcamalar.fold(0.0, (sum, item) => sum + item.miktar);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +84,8 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
-                      onPressed: () {
+                      onPressed: () async {
+                        await DatabaseHarcamalar.instance.delete(harcama.id!);
                         setState(() {
                           toplamHarcama -= harcama.miktar;
                           harcamalar.removeAt(index);
@@ -138,11 +154,17 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
               child: Text('İptal'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 double miktar = double.tryParse(miktarController.text) ?? 0.0;
                 String aciklama = aciklamaController.text;
+                Harcama yeniHarcama = Harcama(
+                  miktar: miktar,
+                  aciklama: aciklama,
+                  tarih: DateTime.now(),
+                );
+                await DatabaseHarcamalar.instance.create(yeniHarcama);
                 setState(() {
-                  harcamalar.add(Harcama(DateTime.now(), miktar, aciklama));
+                  harcamalar.add(yeniHarcama);
                   toplamHarcama += miktar;
                 });
                 Navigator.of(context).pop();
@@ -154,12 +176,4 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
       },
     );
   }
-}
-
-class Harcama {
-  final DateTime tarih;
-  final double miktar;
-  final String aciklama;
-
-  Harcama(this.tarih, this.miktar, this.aciklama);
 }
