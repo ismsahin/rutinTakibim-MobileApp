@@ -21,21 +21,30 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
+      onUpgrade: _upgradeDB,
     );
   }
 
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
+    const boolType = 'INTEGER NOT NULL';
 
     await db.execute('''
     CREATE TABLE todos (
       id $idType,
-      task $textType
+      task $textType,
+      isCompleted $boolType DEFAULT 0
     )
     ''');
+  }
+
+  Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE todos ADD COLUMN isCompleted INTEGER NOT NULL DEFAULT 0');
+    }
   }
 
   Future<void> create(String task) async {
@@ -43,7 +52,7 @@ class DatabaseHelper {
 
     await db.insert(
       'todos',
-      {'task': task},
+      {'task': task, 'isCompleted': 0},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -53,6 +62,17 @@ class DatabaseHelper {
 
     const orderBy = 'id ASC';
     return await db.query('todos', orderBy: orderBy);
+  }
+
+  Future<void> updateCompletion(int id, int isCompleted) async {
+    final db = await instance.database;
+
+    await db.update(
+      'todos',
+      {'isCompleted': isCompleted},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   Future<int> delete(int id) async {
@@ -65,5 +85,24 @@ class DatabaseHelper {
     );
   }
 
+
+
+
+
+  Future<int> getCountOfIncompleteTodos() async {
+    final db = await instance.database;
+
+    var result = await db.rawQuery('SELECT COUNT(*) FROM todos WHERE isCompleted = 0');
+    int? count = Sqflite.firstIntValue(result);
+    return count ?? 0;
+  }
+
+  Future<int> getCountOfCompletedTodos() async {
+    final db = await instance.database;
+
+    var result = await db.rawQuery('SELECT COUNT(*) FROM todos WHERE isCompleted = 1');
+    int? count = Sqflite.firstIntValue(result);
+    return count ?? 0;
+  }
 
 }

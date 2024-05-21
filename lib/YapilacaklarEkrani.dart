@@ -8,6 +8,7 @@ class YapilacaklarEkrani extends StatefulWidget {
 
 class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
   List<Map<String, dynamic>> todos = [];
+  List<Map<String, dynamic>> completedTodos = [];
   TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -19,7 +20,8 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
   Future<void> _refreshTodos() async {
     final data = await DatabaseHelper.instance.readAllTodos();
     setState(() {
-      todos = data;
+      todos = data.where((todo) => todo['isCompleted'] == 0).toList();
+      completedTodos = data.where((todo) => todo['isCompleted'] == 1).toList();
     });
   }
 
@@ -32,20 +34,78 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: todos.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(todos[index]['task']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      await DatabaseHelper.instance.delete(todos[index]['id']);
-                      _refreshTodos();
-                    },
+            child: ListView(
+              children: [
+                ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Text(
+                    'Yapılacaklar',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                );
-              },
+                  children: todos.map((todo) => ListTile(
+                    leading: Checkbox(
+                      value: todo['isCompleted'] == 1,
+                      onChanged: (bool? value) async {
+                        await DatabaseHelper.instance.updateCompletion(
+                            todo['id'], value! ? 1 : 0);
+                        _refreshTodos();
+                      },
+                    ),
+                    title: Text(
+                      todo['task'],
+                      style: TextStyle(
+                        decoration: todo['isCompleted'] == 1
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        await DatabaseHelper.instance.delete(todo['id']);
+                        _refreshTodos();
+                      },
+                    ),
+                  )).toList(),
+                ),
+                ExpansionTile(
+                  title: Text(
+                    'Tamamlananlar',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  children: completedTodos.map((todo) => ListTile(
+                    leading: Checkbox(
+                      value: todo['isCompleted'] == 1,
+                      onChanged: (bool? value) async {
+                        await DatabaseHelper.instance.updateCompletion(
+                            todo['id'], value! ? 1 : 0);
+                        _refreshTodos();
+                      },
+                    ),
+                    title: Text(
+                      todo['task'],
+                      style: TextStyle(
+                        decoration: todo['isCompleted'] == 1
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        await DatabaseHelper.instance.delete(todo['id']);
+                        _refreshTodos();
+                      },
+                    ),
+                  )).toList(),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -62,7 +122,8 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_textEditingController.text.isNotEmpty) {
-                      await DatabaseHelper.instance.create(_textEditingController.text);
+                      await DatabaseHelper.instance
+                          .create(_textEditingController.text);
                       _textEditingController.clear();
                       _refreshTodos();
                     }
@@ -84,12 +145,12 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
               children: [
                 Text(
                   'Toplam yapılacaklar:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), // fontSize'u 18 olarak güncellendi
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 SizedBox(width: 5),
                 Text(
                   '${todos.length}',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18), // fontSize'u 18 olarak güncellendi
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ],
             ),

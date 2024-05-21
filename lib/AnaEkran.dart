@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'dart:async';
 import 'package:yapilacaklar_listem_proje/DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
 import 'package:yapilacaklar_listem_proje/DatabaseHarcamalar.dart'; // DatabaseHelperHarcamalar dosyasını içe aktarın.
+import 'package:yapilacaklar_listem_proje/DatabaseTakvim.dart'; // DatabaseTakvim dosyasını içe aktarın.
 
 class AnaEkran extends StatefulWidget {
   @override
@@ -10,6 +14,7 @@ class AnaEkran extends StatefulWidget {
 class _AnaEkranState extends State<AnaEkran> {
   List<Map<String, dynamic>> todos = [];
   List<Harcama> harcamalar = [];
+  List<Task> upcomingTasks = [];
   double toplamHarcama = 0.0;
 
   @override
@@ -17,12 +22,13 @@ class _AnaEkranState extends State<AnaEkran> {
     super.initState();
     _refreshTodos();
     _refreshHarcamalar();
+    _refreshUpcomingTasks();
   }
 
   Future<void> _refreshTodos() async {
     final data = await DatabaseHelper.instance.readAllTodos();
     setState(() {
-      todos = data;
+      todos = data.where((todo) => todo['isCompleted'] == 0).toList();
     });
   }
 
@@ -32,9 +38,17 @@ class _AnaEkranState extends State<AnaEkran> {
     data.forEach((harcama) {
       toplam += harcama.miktar;
     });
+
     setState(() {
-      harcamalar = data;
+      harcamalar = data.reversed.take(7).toList(); // Son 7 harcamayı alın.
       toplamHarcama = toplam;
+    });
+  }
+
+  Future<void> _refreshUpcomingTasks() async {
+    final data = await DatabaseTakvim.instance.fetchUpcomingTasks();
+    setState(() {
+      upcomingTasks = data;
     });
   }
 
@@ -75,6 +89,11 @@ class _AnaEkranState extends State<AnaEkran> {
                     Map<String, dynamic> todo = entry.value;
                     return Text('$index. ${todo['task']}');
                   }).toList(),
+                  SizedBox(height: 8),
+                  Text(
+                    'Tamamlanacaklar: ${todos.where((todo) => todo['isCompleted'] == 0).length} adet',
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),
@@ -86,7 +105,7 @@ class _AnaEkranState extends State<AnaEkran> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Bu Ayki Harcamalar',
+                    'Bu Ayki Harcamalar (Son 7)',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
@@ -99,12 +118,12 @@ class _AnaEkranState extends State<AnaEkran> {
                           height: 10,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.black, // Yuvarlak rengini buradan ayarlayabilirsiniz
+                            color: Colors.black,
                           ),
                         ),
                         Text(
                           '${harcama.aciklama}: ${harcama.miktar.toStringAsFixed(2)} TL',
-                          style: TextStyle(), // Yazı rengi ve kalınlığını buradan ayarlayabilirsiniz
+                          style: TextStyle(),
                         ),
                       ],
                     );
@@ -112,7 +131,7 @@ class _AnaEkranState extends State<AnaEkran> {
                   SizedBox(height: 8),
                   Text(
                     'Toplam Harcama: ${toplamHarcama.toStringAsFixed(2)} TL',
-                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold), // Yazı rengi ve kalınlığını buradan ayarlayabilirsiniz
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -129,9 +148,25 @@ class _AnaEkranState extends State<AnaEkran> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Text('Alinin doğum günü'),
-                  Text('Projenin teslimi yaklaşıyor'),
-                  Text('Aydına uçak bileti alınacak'),
+                  ...upcomingTasks.map((task) {
+                    return Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 8),
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          '${task.date.toLocal().toIso8601String().split('T')[0]}: ${task.title} - ${task.description}',
+                          style: TextStyle(),
+                        ),
+                      ],
+                    );
+                  }).toList(),
                 ],
               ),
             ),

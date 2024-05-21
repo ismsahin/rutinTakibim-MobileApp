@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:yapilacaklar_listem_proje/DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
-import 'package:yapilacaklar_listem_proje/bildirim_ekrani.dart';
-import 'package:yapilacaklar_listem_proje/AnaEkran.dart';
-import 'package:yapilacaklar_listem_proje/HarcamalarEkrani.dart';
-import 'package:yapilacaklar_listem_proje/YapilacaklarEkrani.dart';
-import 'package:yapilacaklar_listem_proje/TakvimEkrani.dart';
-import 'package:yapilacaklar_listem_proje/HesabimEkrani.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'user_registration_screen.dart';
+import 'AnaEkran.dart';
+import 'YapilacaklarEkrani.dart';
+import 'HarcamalarEkrani.dart';
+import 'TakvimEkrani.dart';
+import 'HesabimEkrani.dart';
+import 'bildirim_ekrani.dart';
 
 void main() {
   runApp(TodoApp());
@@ -19,8 +20,36 @@ class TodoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AnaSayfa(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => UserCheckScreen(),
+        '/registration': (context) => UserRegistrationScreen(),
+        '/home': (context) => AnaSayfa(),
+      },
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class UserCheckScreen extends StatelessWidget {
+  Future<bool> _isUserRegistered() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('name') && prefs.containsKey('surname');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _isUserRegistered(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasData && snapshot.data == true) {
+          return AnaSayfa();
+        } else {
+          return UserRegistrationScreen();
+        }
+      },
     );
   }
 }
@@ -41,19 +70,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
     TakvimEkrani(),
     HesabimEkrani(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshTodos();
-  }
-
-  Future<void> _refreshTodos() async {
-    final data = await DatabaseHelper.instance.readAllTodos();
-    setState(() {
-      todos = data;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
