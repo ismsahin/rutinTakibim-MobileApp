@@ -71,9 +71,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
   final List<Widget> _pages = [
     const AnaEkran(),
-    YapilacaklarEkrani(),
+    const YapilacaklarEkrani(),
     const HarcamalarEkrani(),
-    TakvimEkrani(),
+    const TakvimEkrani(),
     const HesabimEkrani(),
   ];
 

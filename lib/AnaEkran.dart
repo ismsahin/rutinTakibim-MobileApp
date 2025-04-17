@@ -4,7 +4,8 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:yapilacaklar_listem_proje/DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
 import 'package:yapilacaklar_listem_proje/DatabaseHarcamalar.dart'; // DatabaseHelperHarcamalar dosyasını içe aktarın.
-import 'package:yapilacaklar_listem_proje/DatabaseTakvim.dart'; // DatabaseTakvim dosyasını içe aktarın.
+import 'package:yapilacaklar_listem_proje/DatabaseTakvim.dart';
+import 'package:yapilacaklar_listem_proje/ListTodos.dart'; // DatabaseTakvim dosyasını içe aktarın.
 
 class AnaEkran extends StatefulWidget {
   const AnaEkran({super.key});
@@ -72,6 +73,29 @@ class _AnaEkranState extends State<AnaEkran> {
                 'GÜNE BAKIŞ',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.purple),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Listtodos()),
+                  );
+                },
+                icon: const Icon(Icons.list_alt_rounded),
+                label: const Text(
+                  'Listeleri Görüntüle',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ),
             Container(
