@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'DatabaseHelper.dart'; // DatabaseHelper dosyasını içe aktarın.
 
 class YapilacaklarEkrani extends StatefulWidget {
+  const YapilacaklarEkrani({super.key});
+
   @override
   _YapilacaklarEkraniState createState() => _YapilacaklarEkraniState();
 }
@@ -9,7 +11,7 @@ class YapilacaklarEkrani extends StatefulWidget {
 class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
   List<Map<String, dynamic>> todos = [];
   List<Map<String, dynamic>> completedTodos = [];
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Yapılacaklar Listesi'),
+        title: const Text('Yapılacaklar Listesi'),
       ),
       body: Column(
         children: [
@@ -38,104 +40,107 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
               children: [
                 ExpansionTile(
                   initiallyExpanded: true,
-                  title: Text(
+                  title: const Text(
                     'Yapılacaklar',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  children: todos.map((todo) => ListTile(
-                    leading: Checkbox(
-                      value: todo['isCompleted'] == 1,
-                      onChanged: (bool? value) async {
-                        await DatabaseHelper.instance.updateCompletion(
-                            todo['id'], value! ? 1 : 0);
-                        _refreshTodos();
-                      },
-                    ),
-                    title: Text(
-                      todo['task'],
-                      style: TextStyle(
-                        decoration: todo['isCompleted'] == 1
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        await DatabaseHelper.instance.delete(todo['id']);
-                        _refreshTodos();
-                      },
-                    ),
-                  )).toList(),
+                  children: todos
+                      .map((todo) => ListTile(
+                            leading: Checkbox(
+                              value: todo['isCompleted'] == 1,
+                              onChanged: (bool? value) async {
+                                await DatabaseHelper.instance
+                                    .updateCompletion(todo['id'], value! ? 1 : 0);
+                                _refreshTodos();
+                              },
+                            ),
+                            title: Text(
+                              todo['task'],
+                              style: TextStyle(
+                                decoration: todo['isCompleted'] == 1
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () async {
+                                await DatabaseHelper.instance.delete(todo['id']);
+                                _refreshTodos();
+                              },
+                            ),
+                          ))
+                      .toList(),
                 ),
                 ExpansionTile(
-                  title: Text(
+                  title: const Text(
                     'Tamamlananlar',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  children: completedTodos.map((todo) => ListTile(
-                    leading: Checkbox(
-                      value: todo['isCompleted'] == 1,
-                      onChanged: (bool? value) async {
-                        await DatabaseHelper.instance.updateCompletion(
-                            todo['id'], value! ? 1 : 0);
-                        _refreshTodos();
-                      },
-                    ),
-                    title: Text(
-                      todo['task'],
-                      style: TextStyle(
-                        decoration: todo['isCompleted'] == 1
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        await DatabaseHelper.instance.delete(todo['id']);
-                        _refreshTodos();
-                      },
-                    ),
-                  )).toList(),
+                  children: completedTodos
+                      .map((todo) => ListTile(
+                            leading: Checkbox(
+                              value: todo['isCompleted'] == 1,
+                              onChanged: (bool? value) async {
+                                await DatabaseHelper.instance
+                                    .updateCompletion(todo['id'], value! ? 1 : 0);
+                                _refreshTodos();
+                              },
+                            ),
+                            title: Text(
+                              todo['task'],
+                              style: TextStyle(
+                                decoration: todo['isCompleted'] == 1
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () async {
+                                await DatabaseHelper.instance.delete(todo['id']);
+                                _refreshTodos();
+                              },
+                            ),
+                          ))
+                      .toList(),
                 ),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _textEditingController,
-                    decoration: InputDecoration(hintText: 'Bir görev ekle'),
+                    decoration: const InputDecoration(hintText: 'Bir görev ekle'),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () async {
                     if (_textEditingController.text.isNotEmpty) {
-                      await DatabaseHelper.instance
-                          .create(_textEditingController.text);
+                      await DatabaseHelper.instance.create(_textEditingController.text);
                       _textEditingController.clear();
                       _refreshTodos();
                     }
                   },
-                  child: Text('Ekle'),
+                  child: const Text('Ekle'),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(8),
@@ -143,14 +148,14 @@ class _YapilacaklarEkraniState extends State<YapilacaklarEkrani> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Toplam yapılacaklar:',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 Text(
                   '${todos.length}',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ],
             ),

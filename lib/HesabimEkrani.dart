@@ -9,6 +9,8 @@ import 'TakvimEkrani.dart';
 import 'DatabaseHelper.dart';
 
 class HesabimEkrani extends StatefulWidget {
+  const HesabimEkrani({super.key});
+
   @override
   _HesabimEkraniState createState() => _HesabimEkraniState();
 }
@@ -16,17 +18,17 @@ class HesabimEkrani extends StatefulWidget {
 class _HesabimEkraniState extends State<HesabimEkrani> {
   int yapilmamisGorevlerCount = 0;
   int tamamlananlarCount = 0;
-  int takvimlerimCount = 24;  // Sabit olarak 24 sayısı
+  int takvimlerimCount = 24; // Sabit olarak 24 sayısı
   String name = "";
   String surname = "";
   String? imagePath;
 
-    @override
-    void initState() {
-      super.initState();
-      _loadUserInfo();
-      _loadCounts();
-    }
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+    _loadCounts();
+  }
 
   Future<void> _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -74,10 +76,10 @@ class _HesabimEkraniState extends State<HesabimEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hesabım'),
+        title: const Text('Hesabım'),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -105,7 +107,7 @@ class _HesabimEkraniState extends State<HesabimEkrani> {
                   "$name $surname",
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headlineMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
@@ -129,7 +131,7 @@ class _HesabimEkraniState extends State<HesabimEkrani> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HarcamalarEkrani()),
+                          MaterialPageRoute(builder: (context) => const HarcamalarEkrani()),
                         );
                       },
                       heroTag: 'mesage',
@@ -172,7 +174,7 @@ class _HesabimEkraniState extends State<HesabimEkrani> {
 class _TopPortion extends StatelessWidget {
   final String? imagePath;
 
-  const _TopPortion({Key? key, this.imagePath}) : super(key: key);
+  const _TopPortion({super.key, this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -204,11 +206,11 @@ class _TopPortion extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Colors.black,
                   child: imagePath == null
-                      ? Icon(Icons.person, size: 80, color: Colors.white)
+                      ? const Icon(Icons.person, size: 80, color: Colors.white)
                       : CircleAvatar(
-                    radius: 72,
-                    backgroundImage: FileImage(File(imagePath!)),
-                  ),
+                          radius: 72,
+                          backgroundImage: FileImage(File(imagePath!)),
+                        ),
                 ),
                 Positioned(
                   bottom: 0,
@@ -240,11 +242,11 @@ class _ProfileInfoRow extends StatelessWidget {
   final int takvimlerimCount;
 
   const _ProfileInfoRow({
-    Key? key,
+    super.key,
     required this.yapilmamisGorevlerCount,
     required this.tamamlananlarCount,
     required this.takvimlerimCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +267,7 @@ class _ProfileInfoRow extends StatelessWidget {
       children: [
         Text(
           count.toString(),
-          style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(title),
@@ -289,7 +291,8 @@ class UserEditScreen extends StatefulWidget {
   final String? currentImagePath;
   final Function(String, String, File?) onSave;
 
-  UserEditScreen({
+  const UserEditScreen({
+    super.key,
     required this.currentName,
     required this.currentSurname,
     this.currentImagePath,
@@ -336,10 +339,10 @@ class _UserEditScreenState extends State<UserEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil Düzenle'),
+        title: const Text('Profil Düzenle'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _saveChanges,
           )
         ],
@@ -352,7 +355,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Ad'),
+                decoration: const InputDecoration(labelText: 'Ad'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen adınızı girin';
@@ -362,7 +365,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
               ),
               TextFormField(
                 controller: _surnameController,
-                decoration: InputDecoration(labelText: 'Soyad'),
+                decoration: const InputDecoration(labelText: 'Soyad'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen soyadınızı girin';
@@ -371,12 +374,10 @@ class _UserEditScreenState extends State<UserEditScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              _image == null
-                  ? Text('Fotoğraf seçilmedi')
-                  : Image.file(_image!, height: 100),
+              _image == null ? const Text('Fotoğraf seçilmedi') : Image.file(_image!, height: 100),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: Text('Fotoğraf Seç'),
+                child: const Text('Fotoğraf Seç'),
               ),
             ],
           ),

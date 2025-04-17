@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'databaseharcamalar.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,12 +15,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HarcamalarEkrani(),
+      home: const HarcamalarEkrani(),
     );
   }
 }
 
 class HarcamalarEkrani extends StatefulWidget {
+  const HarcamalarEkrani({super.key});
+
   @override
   _HarcamalarEkraniState createState() => _HarcamalarEkraniState();
 }
@@ -45,7 +49,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Harcamalar'),
+        title: const Text('Harcamalar'),
       ),
       body: Column(
         children: [
@@ -61,21 +65,21 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
                       children: [
                         Text(
                           'Tarih: ${_formatTarih(harcama.tarih)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           'Açıklama: ${harcama.aciklama}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           'Fiyat: ${_formatFiyat(harcama.miktar)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                           ),
@@ -83,7 +87,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
                       ],
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () async {
                         await DatabaseHarcamalar.instance.delete(harcama.id!);
                         setState(() {
@@ -101,7 +105,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Toplam Harcama: ${_formatFiyat(toplamHarcama)}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -110,7 +114,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
         onPressed: () {
           _harcamaEkleDialog(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -131,18 +135,18 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Yeni Harcama Ekle'),
+          title: const Text('Yeni Harcama Ekle'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: miktarController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: 'Miktar'),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Miktar'),
               ),
               TextField(
                 controller: aciklamaController,
-                decoration: InputDecoration(labelText: 'Açıklama'),
+                decoration: const InputDecoration(labelText: 'Açıklama'),
               ),
             ],
           ),
@@ -151,7 +155,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('İptal'),
+              child: const Text('İptal'),
             ),
             TextButton(
               onPressed: () async {
@@ -169,7 +173,7 @@ class _HarcamalarEkraniState extends State<HarcamalarEkrani> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Ekle'),
+              child: const Text('Ekle'),
             ),
           ],
         );

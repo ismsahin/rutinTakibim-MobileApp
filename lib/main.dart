@@ -9,10 +9,12 @@ import 'HesabimEkrani.dart';
 import 'bildirim_ekrani.dart';
 
 void main() {
-  runApp(TodoApp());
+  runApp(const TodoApp());
 }
 
 class TodoApp extends StatelessWidget {
+  const TodoApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,9 +24,9 @@ class TodoApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => UserCheckScreen(),
-        '/registration': (context) => UserRegistrationScreen(),
-        '/home': (context) => AnaSayfa(),
+        '/': (context) => const UserCheckScreen(),
+        '/registration': (context) => const UserRegistrationScreen(),
+        '/home': (context) => const AnaSayfa(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -32,6 +34,8 @@ class TodoApp extends StatelessWidget {
 }
 
 class UserCheckScreen extends StatelessWidget {
+  const UserCheckScreen({super.key});
+
   Future<bool> _isUserRegistered() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.containsKey('name') && prefs.containsKey('surname');
@@ -43,11 +47,11 @@ class UserCheckScreen extends StatelessWidget {
       future: _isUserRegistered(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasData && snapshot.data == true) {
-          return AnaSayfa();
+          return const AnaSayfa();
         } else {
-          return UserRegistrationScreen();
+          return const UserRegistrationScreen();
         }
       },
     );
@@ -55,6 +59,8 @@ class UserCheckScreen extends StatelessWidget {
 }
 
 class AnaSayfa extends StatefulWidget {
+  const AnaSayfa({super.key});
+
   @override
   _AnaSayfaState createState() => _AnaSayfaState();
 }
@@ -64,26 +70,26 @@ class _AnaSayfaState extends State<AnaSayfa> {
   List<Map<String, dynamic>> todos = [];
 
   final List<Widget> _pages = [
-    AnaEkran(),
+    const AnaEkran(),
     YapilacaklarEkrani(),
-    HarcamalarEkrani(),
+    const HarcamalarEkrani(),
     TakvimEkrani(),
-    HesabimEkrani(),
+    const HesabimEkrani(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rutin Takibim'),
+        title: const Text('Rutin Takibim'),
         backgroundColor: Colors.red,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BildirimEkran()),
+                MaterialPageRoute(builder: (context) => const BildirimEkran()),
               );
             },
           ),

@@ -85,10 +85,6 @@ class DatabaseHelper {
     );
   }
 
-
-
-
-
   Future<int> getCountOfIncompleteTodos() async {
     final db = await instance.database;
 
@@ -104,5 +100,4 @@ class DatabaseHelper {
     int? count = Sqflite.firstIntValue(result);
     return count ?? 0;
   }
-
 }

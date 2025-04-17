@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'user_database_helper.dart';
 
 class UserRegistrationScreen extends StatefulWidget {
+  const UserRegistrationScreen({super.key});
+
   @override
   _UserRegistrationScreenState createState() => _UserRegistrationScreenState();
 }
@@ -54,17 +56,17 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kullanıcı Kaydı'),
+        title: const Text('Kullanıcı Kaydı'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Ad'),
+                decoration: const InputDecoration(labelText: 'Ad'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen adınızı girin';
@@ -74,7 +76,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
               ),
               TextFormField(
                 controller: _surnameController,
-                decoration: InputDecoration(labelText: 'Soyad'),
+                decoration: const InputDecoration(labelText: 'Soyad'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen soyadınızı girin';
@@ -82,18 +84,16 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
-              _image == null
-                  ? Text('Fotoğraf seçilmedi')
-                  : Image.file(_image!, height: 100),
+              const SizedBox(height: 16),
+              // _image == null ? const Text('Fotoğraf seçilmedi') : Image.file(_image!, height: 100),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: Text('Fotoğraf Seç'),
+                child: const Text('Fotoğraf Seç'),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _saveUserInfo,
-                child: Text('Kaydet'),
+                child: const Text('Kaydet'),
               ),
             ],
           ),

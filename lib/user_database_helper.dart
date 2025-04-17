@@ -6,16 +6,15 @@ import 'package:path/path.dart';
 
 class UserDatabaseHelper {
   static final UserDatabaseHelper _instance = UserDatabaseHelper._internal();
-  late Database _db;
-
   factory UserDatabaseHelper() => _instance;
-
   UserDatabaseHelper._internal();
 
+  Database? _db;
+
   Future<Database> get database async {
-    if (_db != null) return _db;
+    if (_db != null) return _db!;
     _db = await initDatabase();
-    return _db;
+    return _db!;
   }
 
   Future<Database> initDatabase() async {

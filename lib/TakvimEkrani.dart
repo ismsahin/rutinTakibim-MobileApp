@@ -3,10 +3,12 @@ import 'package:table_calendar/table_calendar.dart';
 import 'DatabaseTakvim.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,12 +16,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TakvimEkrani(),
+      home: const TakvimEkrani(),
     );
   }
 }
 
 class TakvimEkrani extends StatefulWidget {
+  const TakvimEkrani({super.key});
+
   @override
   _TakvimEkraniState createState() => _TakvimEkraniState();
 }
@@ -28,7 +32,7 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  Map<DateTime, List<Task>> _tasks = {};
+  final Map<DateTime, List<Task>> _tasks = {};
   List<Task> _upcomingTasks = [];
   List<Task> _allTasks = [];
   int _taskCount = 0;
@@ -81,7 +85,7 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Takvim Ekranı'),
+        title: const Text('Takvim Ekranı'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -127,11 +131,11 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
                   _loadTaskCount();
                 });
               },
-              child: Text('Görev Ekle'),
+              child: const Text('Görev Ekle'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ExpansionTile(
-              title: Text(
+              title: const Text(
                 'Yaklaşan Etkinlikler (30 gün)',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -139,18 +143,19 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: _upcomingTasks.length,
                   itemBuilder: (context, index) {
                     final task = _upcomingTasks[index];
                     return ListTile(
                       title: Text(task.title),
-                      subtitle: Text('${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
+                      subtitle: Text(
+                          '${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit),
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -166,7 +171,7 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () {
                               setState(() {
                                 _upcomingTasks.removeAt(index);
@@ -186,23 +191,24 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
             ExpansionTile(
               title: Text(
                 'Tüm Etkinlikler ($_taskCount)',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: _allTasks.length,
                   itemBuilder: (context, index) {
                     final task = _allTasks[index];
                     return ListTile(
                       title: Text(task.title),
-                      subtitle: Text('${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
+                      subtitle: Text(
+                          '${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit),
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -218,7 +224,7 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () {
                               setState(() {
                                 _allTasks.removeAt(index);
@@ -245,7 +251,7 @@ class _TakvimEkraniState extends State<TakvimEkrani> {
 class AddTaskScreen extends StatefulWidget {
   final DateTime selectedDate;
 
-  AddTaskScreen({required this.selectedDate});
+  const AddTaskScreen({super.key, required this.selectedDate});
 
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
@@ -267,7 +273,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Yeni Görev Ekle'),
+        title: const Text('Yeni Görev Ekle'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -276,7 +282,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Başlık'),
+                decoration: const InputDecoration(labelText: 'Başlık'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir başlık girin';
@@ -288,7 +294,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Açıklama'),
+                decoration: const InputDecoration(labelText: 'Açıklama'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir açıklama girin';
@@ -299,7 +305,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   _description = value!;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
@@ -314,9 +320,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     });
                   }
                 },
-                child: Text('Tarih Seç (${_selectedDate.toLocal().toIso8601String().split('T')[0]})'),
+                child:
+                    Text('Tarih Seç (${_selectedDate.toLocal().toIso8601String().split('T')[0]})'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -333,7 +340,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Görev Ekle'),
+                child: const Text('Görev Ekle'),
               ),
             ],
           ),
@@ -346,7 +353,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 class EditTaskScreen extends StatefulWidget {
   final Task task;
 
-  EditTaskScreen({required this.task});
+  const EditTaskScreen({super.key, required this.task});
 
   @override
   _EditTaskScreenState createState() => _EditTaskScreenState();
@@ -370,7 +377,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Görev Düzenle'),
+        title: const Text('Görev Düzenle'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -380,7 +387,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             children: [
               TextFormField(
                 initialValue: _title,
-                decoration: InputDecoration(labelText: 'Başlık'),
+                decoration: const InputDecoration(labelText: 'Başlık'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir başlık girin';
@@ -393,7 +400,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               ),
               TextFormField(
                 initialValue: _description,
-                decoration: InputDecoration(labelText: 'Açıklama'),
+                decoration: const InputDecoration(labelText: 'Açıklama'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir açıklama girin';
@@ -404,7 +411,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   _description = value!;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
@@ -419,9 +426,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     });
                   }
                 },
-                child: Text('Tarih Seç (${_selectedDate.toLocal().toIso8601String().split('T')[0]})'),
+                child:
+                    Text('Tarih Seç (${_selectedDate.toLocal().toIso8601String().split('T')[0]})'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -439,7 +447,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Görev Güncelle'),
+                child: const Text('Görev Güncelle'),
               ),
             ],
           ),
@@ -452,13 +460,13 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
 class TasksScreen extends StatelessWidget {
   final List<Task> tasks;
 
-  TasksScreen({required this.tasks});
+  const TasksScreen({super.key, required this.tasks});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Görevler'),
+        title: const Text('Görevler'),
       ),
       body: ListView.builder(
         itemCount: tasks.length,
@@ -466,7 +474,8 @@ class TasksScreen extends StatelessWidget {
           final task = tasks[index];
           return ListTile(
             title: Text(task.title),
-            subtitle: Text('${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
+            subtitle: Text(
+                '${task.description} - ${task.date.toLocal().toIso8601String().split('T')[0]}'),
           );
         },
       ),

@@ -101,7 +101,7 @@ class DatabaseTakvim {
   Future<List<Task>> fetchUpcomingTasks() async {
     final db = await instance.database;
     final now = DateTime.now();
-    final oneMonthLater = now.add(Duration(days: 30));
+    final oneMonthLater = now.add(const Duration(days: 30));
 
     final maps = await db.query(
       'tasks',
@@ -152,4 +152,3 @@ class DatabaseTakvim {
     return count ?? 0;
   }
 }
-
